@@ -1,16 +1,15 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "noEmit": true,
-    "noImplicitAny": true,
-    "module": "es2022",
-    "target": "es2022",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-    }
-  },
-  "include": ["*.js", "src/**/*.js", "ambient.d.ts"]
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"noImplicitAny": true,
+		"module": "es2022",
+		"target": "es2022",
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"paths": {}
+	},
+	"include": ["*.js", "src/**/*.js", "ambient.d.ts"]
 }

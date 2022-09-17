@@ -2,3 +2,4 @@
 node_modules
 /files
 .idea
+src/static.js
