@@ -12,7 +12,7 @@ const initialized = server.init({
  * @param {import('aws-lambda').APIGatewayProxyEventV2} event
  * @param {import('aws-lambda').Context} context
  */
-export default async function handler(event, context) {
+export const handler = async function(event, context) {
     const request = to_request(event);
 
     await initialized;
