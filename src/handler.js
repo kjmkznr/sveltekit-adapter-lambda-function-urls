@@ -37,6 +37,10 @@ export default async function handler(event, context) {
             body: Buffer.from(await response.arrayBuffer()).toString('base64')
         };
     }
+    return {
+        ...partial_response,
+        body: await response.text()
+    };
 }
 
 /**
