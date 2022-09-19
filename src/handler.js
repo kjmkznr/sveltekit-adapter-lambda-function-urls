@@ -2,6 +2,8 @@ import './shims';
 import { Server } from '0SERVER';
 import { manifest } from 'MANIFEST';
 import { split_headers } from './headers';
+import staticFiles from './static';
+import {promises} from "fs";
 
 const server = new Server(manifest);
 const initialized = server.init({
@@ -15,6 +17,27 @@ const initialized = server.init({
 export const handler = async function(event, context) {
     const request = to_request(event);
 
+    // Serve static file
+    if (request.method === 'GET') {
+        let url = event.rawPath;
+        if (!url.includes('.') && url.slice(-1) !== '/') {
+            // Append trailing slash
+            url += '/';
+        }
+        if (url.slice(-1) === "/") {
+            // Append directory index
+            url += 'index.html';
+        }
+        url = url.replace(/^\//, '');
+
+        console.log(`Access to ${url}`);
+        const files = staticFiles.filter(s => s.name === url);
+        if (files.length > 0) {
+            return readFileAsResponse(files[0].name, files[0].mime);
+        }
+    }
+
+    // dynamic response
     await initialized;
     const response = await server.respond(request, {
         platform: { context },
@@ -85,4 +108,42 @@ function is_text(content_type) {
     const type = content_type.split(';')[0].toLowerCase(); // get the mime type
 
     return type.startsWith('text/') || type.endsWith('+xml') || text_types.has(type);
+}
+
+/**
+ *
+ * @param {string} filePath
+ * @param {string} contentType
+ * @return {import('aws-lambda').APIGatewayProxyResultV2}
+ */
+async function readFileAsResponse(filePath, contentType) {
+    let stream
+    try {
+        stream = await promises.readFile(filePath)
+    } catch (err) {
+        if (err.code === 'ENOENT') {
+            return {
+                statusCode: 404,
+            }
+        }
+    }
+
+    let body;
+    let isBase64Encoded = false;
+    if (is_text(contentType)) {
+        body = stream.toString('utf8');
+        contentType += '; charset=UTF-8'
+    } else {
+        isBase64Encoded = true;
+        body = Buffer.from(stream).toString('base64')
+    }
+
+    return {
+        statusCode: 200,
+        headers: {
+            'Content-Type': contentType,
+        },
+        isBase64Encoded: isBase64Encoded,
+        body: body,
+    }
 }
