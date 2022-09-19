@@ -30,7 +30,6 @@ export const handler = async function(event, context) {
         }
         url = url.replace(/^\//, '');
 
-        console.log(`Access to ${url}`);
         const files = staticFiles.filter(s => s.name === url);
         if (files.length > 0) {
             return readFileAsResponse(files[0].name, files[0].mime);
@@ -45,6 +44,10 @@ export const handler = async function(event, context) {
             return event.headers['x-forwarded-for'];
         }
     });
+
+    if (response.headers['Set-Cookie']) {
+
+    }
 
     const partial_response = {
         statusCode: response.status,
@@ -71,7 +74,7 @@ export const handler = async function(event, context) {
  * @return {Request}
  */
 function to_request(event) {
-    const { rawPath, requestContext, headers, rawQueryString, body, isBase64Encoded } = event;
+    const { rawPath, requestContext, headers, rawQueryString, body, isBase64Encoded, cookies } = event;
     const httpMethod = requestContext.http.method;
     const proto = headers['x-forwarded-proto'];
     const rawURL = ''.concat(proto, '://', requestContext.domainName, rawPath, '?', rawQueryString);
@@ -82,6 +85,9 @@ function to_request(event) {
         headers: new Headers(headers)
     };
 
+    if (cookies) {
+        init.headers.set('Cookie', cookies.join('; '));
+    }
     if (httpMethod !== 'GET' && httpMethod !== 'HEAD') {
         const encoding = isBase64Encoded ? 'base64' : 'utf-8';
         init.body = typeof body === 'string' ? Buffer.from(body, encoding) : body;
