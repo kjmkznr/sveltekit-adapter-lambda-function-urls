@@ -3,17 +3,10 @@
 	"version": "0.1.0",
 	"license": "MIT",
 	"type": "module",
-	"exports": {
-		".": {
-			"types": "./index.d.ts",
-			"import": "./index.js"
-		},
-		"./package.json": "./package.json"
-	},
 	"main": "index.js",
 	"types": "index.d.ts",
 	"files": [
-		"files",
+		"src",
 		"index.d.ts"
 	],
 	"scripts": {
