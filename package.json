@@ -26,7 +26,7 @@
 		"@rollup/plugin-json": "^4.1.0",
 		"@rollup/plugin-node-resolve": "^14.1.0",
 		"@sveltejs/kit": "^1.25.0",
-		"@types/aws-lambda": "^8.10.104",
+		"@types/aws-lambda": "^8.10.121",
 		"@types/node": "^16.18.53",
 		"@types/set-cookie-parser": "^2.4.3",
 		"mime": "^3.0.0",
